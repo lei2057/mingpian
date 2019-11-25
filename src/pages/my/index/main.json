@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": " ",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "van-action-sheet": "/static/vant/action-sheet/index"
+  }
+}
