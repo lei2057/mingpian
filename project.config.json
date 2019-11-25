@@ -1,0 +1,74 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
+	},
+	"miniprogramRoot": "dist/wx/",
+	"compileType": "miniprogram",
+	"appid": "wx355d609039d8ffec",
+	"projectname": "yj-card",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": 0,
+					"name": "pages/index/myCard/main",
+					"pathName": "pages/index/myCard/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 1,
+					"name": "pages/card/shareCard/main",
+					"pathName": "pages/card/shareCard/main",
+					"query": "userId=7",
+					"scene": 1001
+				},
+				{
+					"id": 2,
+					"name": "pages/my/index/main",
+					"pathName": "pages/my/index/main",
+					"query": "",
+					"scene": null
+				}
+			]
+		}
+	}
+}
