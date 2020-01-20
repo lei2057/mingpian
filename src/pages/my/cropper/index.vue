@@ -30,7 +30,7 @@ import md5 from 'md5'
 let wecropper
 const device = wx.getSystemInfoSync() // 获取设备信息
 const width = device.windowWidth // 示例为一个与屏幕等宽的正方形裁剪框
-const height = device.windowHeight - 50
+const height = device.windowHeight + 30
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 export default {
@@ -65,6 +65,8 @@ export default {
   onLoad (options) {
     console.log(options)
     this.pageKey = options.key
+    console.log(device)
+    console.log(height)
   },
   onShow () {
 
@@ -139,7 +141,7 @@ export default {
               } else {
                 wx.showModal({
                   title: '错误提示',
-                  content: '上传图片失败',
+                  content: '上传图片失败!!',
                   showCancel: false,
                   success (res) { }
                 })
@@ -149,9 +151,11 @@ export default {
               wx.hideToast()
               wx.showModal({
                 title: '错误提示',
-                content: '上传图片失败',
+                content: '上传图片失败!',
                 showCancel: false,
-                success (res) { }
+                success (res) {
+                  console.log(res)
+                }
               })
             }
           })

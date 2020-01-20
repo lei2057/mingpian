@@ -137,18 +137,18 @@ export default {
       success (res) {
         console.log(res)
         if (res.errMsg === 'checkSession:ok' && self.userInfo) {
-          self.show = 3
+
         }
       },
       fail (res) {
         // session_key 已经失效，需要重新执行登录流程
         console.log(res)
-        self.show = 1
         wx.removeStorageSync('userInfo')
       }
     })
   },
   onShow () {
+    this.qrShow = false
     var self = this
     self.userInfo = wx.getStorageSync('userInfo')
     if (self.userInfo) {
@@ -156,12 +156,12 @@ export default {
         url: `/vcardInfo/selectById?id=${self.userInfo.userId}`,
         header: self.userInfo.token
       }).then(res => {
-        console.log(res)
+        console.log(res, '2')
         self.show = 2
         if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
           self.dataInfo = res.data
+          console.log('3')
           self.show = 3
-          console.log(self.show)
           self.$http.get({
             url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
             header: self.userInfo.token
@@ -184,8 +184,6 @@ export default {
         }
       })
     }
-
-    console.log(self.show)
   },
   onUnload () {
     this.state = 0

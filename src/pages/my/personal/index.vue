@@ -16,8 +16,9 @@
           </div>
         </div>
         <div class="disflex" style="border-top: 1px solid #E6E6E6;padding: 8px 0 0 8px;margin-top: 8px;">
-          <div class="flex">
-            <div class="disflex company-logo" style="border: 0;" @click="cropper1"><img :src="logos"></div>
+          <div class="flex" @click="cropper1">
+            <div class="disflex company-logo" v-if="!logos">点击传LOGO</div>
+            <div class="company-logo" style="border: 0;" v-else><img :src="logos"></div>
           </div>
           <div class="disflex">
             <div class="icon28" style="margin-right: 6px;" @click.stop="call"><img src="../../../assets/icon-dh.png"></div>
@@ -32,7 +33,7 @@
       <div class="card-wrapper" :class="fontStyle==='1'?'fontColor':''" :style="{backgroundImage: 'url('+bg+');'}">
         <div class="disflex">
           <div class="flex">
-            <div style="width: 90px;height: 90px;border-radius: 50%;overflow: hidden;margin-right: 20px;"><img :src="dataInfo.avatar"></div>
+            <div style="width: 90px;height: 90px;border-radius: 50%;overflow: hidden;margin-right: 20px;"><img :src="avatars"></div>
           </div>
           <div>
             <div class="cardName">{{dataInfo.name}}<span class="cardJob">{{dataInfo.position}}</span></div>
@@ -64,7 +65,7 @@
             <div style="width: 178px;">{{dataInfo.address}}</div>
           </div>
           <div>
-            <div style="width: 90px;height: 90px;border-radius: 50%;overflow: hidden;margin-right: 20px;"><img :src="dataInfo.avatar"></div>
+            <div style="width: 90px;height: 90px;border-radius: 50%;overflow: hidden;margin-right: 20px;"><img :src="avatars"></div>
           </div>
         </div>
         <div class="disflex" style="padding: 8px 0 0 8px;margin-top: 8px;">
@@ -82,7 +83,7 @@
     <div class="card-wrapper" style="background: #FFF;">
       <div class="photo-wrapper" @click="cropper">
         <!-- <div class="photo" v-if="!dataInfo.avatar"><img src="../../../assets/icon-qrcode.png"></div> -->
-        <div class="photo"><img :src="dataInfo.avatar"></div>
+        <div class="photo"><img :src="avatars"></div>
         <div class="photoXj"><img src="../../../assets/icon-xj.png"></div>
       </div>
       <div class="disflex border_cell" style="padding: 8px 0;">
@@ -186,9 +187,9 @@
       </div>
       <div>
         <view class='uploader-img  flex justify-content-start' v-if="companyPic">
-          <view class='uploader-list' v-for="item in companyPic" :key="item" style="height: 130px;border-radius: 20px;overflow: hidden;margin-bottom: 10px;position: relative;">
+          <view class='uploader-list' v-for="(item,index) in companyPic" :key="index" style="height: 130px;border-radius: 20px;overflow: hidden;margin-bottom: 10px;position: relative;">
               <image :src='item' mode="scaleToFill" @click='previewImg'/>
-              <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg'><image src='../../../assets/icon-delete.png' /></div>
+              <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg(index)'><image src='../../../assets/icon-delete.png' /></div>
           </view>
         </view>
         <div class="pic-wrapper" @click="chooseImg">
@@ -200,9 +201,9 @@
     <div> 
       <div class="item-title flex-align"><span class="item-i"></span>我的相册</div>
       <view class='uploader-img  flex justify-content-start' v-if="pics">
-        <view class='uploader-list' v-for="item in pics" :key="item" style="height: 130px;border-radius: 20px;overflow: hidden;margin-bottom: 10px;position: relative;">
+        <view class='uploader-list' v-for="(item,index) in pics" :key="index" style="height: 130px;border-radius: 20px;overflow: hidden;margin-bottom: 10px;position: relative;">
             <image :src='item' mode="scaleToFill" @click='previewImg1'/>
-            <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg1'><img src="../../../assets/icon-delete.png"></div>
+            <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg1(index)'><img src="../../../assets/icon-delete.png"></div>
         </view>
       </view>
       <div class="pic-wrapper" @click="chooseImg1">
@@ -306,8 +307,12 @@ export default {
     setTimeout(() => {
       if (options.avatar) {
         that.avatars = options.avatar
-      } else {
+        that.dataInfo.avatar = options.avatar
+      } else if (options.logo) {
         that.logos = options.logo
+        that.dataInfo.logo = options.logo
+      } else {
+
       }
     }, 1000)
   },
@@ -367,14 +372,7 @@ export default {
                 if (data.code === 200) {
                   let tempFilePaths = data.data.url
                   console.log(tempFilePaths)
-                  // wx.showToast({
-                  //   title: '正在上传...',
-                  //   icon: 'loading',
-                  //   mask: true,
-                  //   duration: 10000
-                  // });
                   that.companyPic.push(tempFilePaths)
-                  console.log(that.companyPic)
                 } else {
                   wx.showModal({
                     title: '错误提示',
@@ -474,18 +472,13 @@ export default {
     },
     // 删除图片
     deleteImg (e) {
-      console.log(e)
       var pics = this.companyPic
-      var index = e.currentTarget.dataset.index
-      pics.splice(index, 1)
-      console.log(pics)
+      pics.splice(e, 1)
       this.companyPic = pics
     },
     deleteImg1 (e) {
       var pics = this.pics
-      var index = e.currentTarget.dataset.index
-      pics.splice(index, 1)
-      console.log(pics)
+      pics.splice(e, 1)
       this.pics = pics
     },
     // 预览图片
@@ -516,7 +509,6 @@ export default {
       })
     },
     submit () {
-      console.log(this.dataInfo)
       this.dataInfo.album = this.pics.join(',')
       this.dataInfo.companyPic = this.companyPic.join(',')
       this.dataInfo.id = this.userInfo.userId + ''

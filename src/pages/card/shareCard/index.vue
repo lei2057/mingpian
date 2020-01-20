@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import navigation from '../../../components/navigation'
+import navigation from '../../../components/navigationShare'
 export default {
   data () {
     return {
@@ -302,10 +302,10 @@ export default {
     .item-i {width: 5px;height: 18px;border-radius: 3px;background: #2487FF;margin-right: 5px;}
   }
   .item-text {color: #707070;font-size: 12px;}
-  .company-wrapper {background: #F4F4F4;border-radius: 20px;box-shadow: 0 4px 6px 0 #E6E6E7;overflow: hidden;
+  .company-wrapper {background: #F4F4F4;border-radius: 28px;box-shadow: 0 4px 6px 0 #E6E6E7;overflow: hidden;
     .item-img {height: 140px;}
     .item-company {font-size: 16px;color: #0B111F;margin: 14px 0;}
   }
-  .item-album {height: 200px;border-radius: 20px;overflow: hidden;margin-bottom: 10px;}
+  .item-album {height: 200px;border-radius: 28px;overflow: hidden;margin-bottom: 10px;}
 }
 </style>

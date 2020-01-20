@@ -282,8 +282,10 @@ export default {
     console.log(options)
     if (options.avatar) {
       this.dataInfo.avatar = options.avatar
-    } else {
+    } else if (options.logo) {
       this.dataInfo.logo = options.logo
+    } else {
+
     }
   },
   onShow () {
@@ -484,30 +486,98 @@ export default {
       if (!this.dataInfo.templateId) {
         this.dataInfo.templateId = this.templateInfo[0].id + ''
       }
+      if (!this.dataInfo.bgImgId) {
+        this.dataInfo.bgImgId = this.backgroundInfo[0].id + ''
+      }
       this.dataInfo.album = this.pics.join(',')
       this.dataInfo.companyPic = this.companyPic.join(',')
       this.dataInfo.xcxOpenId = this.userInfo.openId
       this.dataInfo.id = this.userInfo.userId + ''
-      this.$http.post({
-        url: '/vcardInfo/updateVcard',
-        header: this.userInfo.token,
-        data: this.dataInfo
-      }).then(res => {
-        console.log(res)
-        wx.showToast({
-          title: '名片制作成功',
-          icon: 'success',
-          duration: 1500,
-          mask: false,
-          success: (result) => {
-            setTimeout(() => {
-              wx.switchTab({
-                url: '../index/main'
-              })
-            }, 1500)
+      if (this.verification()) {
+        this.$http.post({
+          url: '/vcardInfo/updateVcard',
+          header: this.userInfo.token,
+          data: this.dataInfo
+        }).then(res => {
+          console.log(res)
+          if (res.code === 200) {
+            wx.showToast({
+              title: '名片制作成功',
+              icon: 'success',
+              duration: 1500,
+              mask: false,
+              success: (result) => {
+                setTimeout(() => {
+                  wx.switchTab({
+                    url: '../index/main'
+                  })
+                }, 1500)
+              }
+            })
+          } else {
+            wx.showToast({
+              title: '名片制作失败',
+              icon: 'success',
+              duration: 1500,
+              mask: false,
+              success: (result) => {}
+            })
           }
         })
-      })
+      }
+    },
+    verification () {
+      if (this.dataInfo.name !== '') {
+        wx.showToast({
+          title: '请填写姓名',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.position) {
+        wx.showToast({
+          title: '请填写职位',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.company) {
+        wx.showToast({
+          title: '请填写公司',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.email) {
+        wx.showToast({
+          title: '请填写邮箱',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.phone) {
+        wx.showToast({
+          title: '请填写电话',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      return true
     },
     templateOpt (index, item) {
       this.dataInfo.templateId = item.id + ''

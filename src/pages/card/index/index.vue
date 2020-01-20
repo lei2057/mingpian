@@ -77,7 +77,7 @@ export default {
 <style lang="scss" scoped>
 .friendCard-wrapper {margin-bottom: 24px;
   .card-time {font-size: 11px;color: #2487FF;margin-bottom: 15px;}
-  .card-item {padding: 5px 12px;margin-bottom: 15px;border: 1px solid #F0F0F0;border-radius: 20px;box-shadow: 0 0 3px 0 #E6E6E7;
+  .card-item {padding: 5px 12px;margin-bottom: 15px;border: 1px solid #F0F0F0;border-radius: 28px;box-shadow: 0 0 3px 0 #E6E6E7;
     .item-photo {width: 80px;height: 80px;border-radius: 50%;overflow: hidden;margin-right: 13px;}
     .item-cont {font-size: 12px;color: #707070;
       .item-name {font-size: 16px;font-weight: 500;color: #0B111F;}

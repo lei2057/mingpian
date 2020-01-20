@@ -1,7 +1,7 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -23,6 +23,7 @@
 	"projectname": "yj-card",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
+	"libVersion": "2.10.0",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -48,25 +49,11 @@
 			"current": -1,
 			"list": [
 				{
-					"id": 0,
-					"name": "pages/index/myCard/main",
-					"pathName": "pages/index/myCard/main",
-					"query": "",
-					"scene": null
-				},
-				{
 					"id": 1,
 					"name": "pages/card/shareCard/main",
 					"pathName": "pages/card/shareCard/main",
 					"query": "userId=7",
 					"scene": 1001
-				},
-				{
-					"id": 2,
-					"name": "pages/my/index/main",
-					"pathName": "pages/my/index/main",
-					"query": "",
-					"scene": null
 				}
 			]
 		}

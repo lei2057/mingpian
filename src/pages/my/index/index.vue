@@ -295,18 +295,55 @@ export default {
 
   },
   methods: {
-    onClose () {
-      this.show1 = false
-      wx.showTabBar({
-        animation: false,
-        success: (result) => {
-
-        },
-        fail: () => {},
-        complete: () => {}
+    fetchInfo () {
+      this.$http.get({
+        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`,
+        header: this.userInfo.token
+      }).then(res => {
+        console.log(res.data, 'aaaa')
+        this.show = 2
+        if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+          this.dataInfo = res.data
+          this.show = 3
+          this.$http.get({
+            url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
+            header: this.userInfo.token
+          }).then(res => {
+          // console.log(res)
+            this.bg = res.data.image
+            if (res.data.name === '1') {
+              this.fontStyle = '2'
+            } else {
+              this.fontStyle = '1'
+            }
+          })
+          this.$http.get({
+            url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
+            header: this.userInfo.token
+          }).then(res => {
+          // console.log(res)
+            this.templateStyle = res.data.name
+          })
+        }
       })
     },
+    onClose () {
+      this.show1 = false
+      this.bg = ''
+      this.bgId = ''
+      this.backgroundIndex = -1
+      this.templateIndex = -1
+      setTimeout(() => {
+        wx.showTabBar({
+          animation: false,
+          success: (result) => {}
+        })
+      }, 500)
+      this.fetchInfo()
+    },
     templateSelect () {
+      console.log(this.backgroundIndex)
+      console.log(this.dataInfo.bgImgId)
       let userInfo = wx.getStorageSync('userInfo')
       if (userInfo) {
         this.show1 = true
@@ -328,13 +365,11 @@ export default {
       }
     },
     templateOpt (index, item) {
-      console.log(item)
       this.templateIndex = index
       this.templateStyle = item.name
       this.templateId = item.id
     },
     backgroundOpt (index, item) {
-      console.log(item)
       this.backgroundIndex = index
       this.bg = item.image
       this.bgId = item.id
@@ -359,14 +394,13 @@ export default {
         duration: 1500
       })
       this.show1 = false
-      wx.showTabBar({
-        animation: false,
-        success: (result) => {
-
-        },
-        fail: () => {},
-        complete: () => {}
-      })
+      this.fetchInfo()
+      setTimeout(() => {
+        wx.showTabBar({
+          animation: false,
+          success: (result) => {}
+        })
+      }, 500)
     },
     details () {
       let userInfo = wx.getStorageSync('userInfo')
