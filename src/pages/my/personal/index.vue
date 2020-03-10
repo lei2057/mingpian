@@ -82,8 +82,8 @@
     <!-- 模板 end -->
     <div class="card-wrapper" style="background: #FFF;">
       <div class="photo-wrapper" @click="cropper">
-        <!-- <div class="photo" v-if="!dataInfo.avatar"><img src="../../../assets/icon-qrcode.png"></div> -->
-        <div class="photo"><img :src="avatars"></div>
+        <div class="photo" v-if="!avatars" style="border: 1px dashed #707070;line-height: 50px;">上传头像</div>
+        <div class="photo" v-else><img :src="avatars"></div>
         <div class="photoXj"><img src="../../../assets/icon-xj.png"></div>
       </div>
       <div class="disflex border_cell" style="padding: 8px 0;">

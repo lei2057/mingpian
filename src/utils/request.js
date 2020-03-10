@@ -1,6 +1,7 @@
 import md5 from 'md5'
-const host = 'https://gate.test.jiatu360.cn/api/vcard'
+// const host = 'https://gate.test.jiatu360.cn/api/vcard'
 // const host = 'http://192.168.0.178:8765/api/vcard'
+const host = 'https://gate.jiatu360.cn/api/vcard'
 var date = new Date()
 var timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 function requestGet (url, method, data, header) {

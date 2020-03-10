@@ -5,9 +5,9 @@
         <div class="disflex">
           <div class="flex">
             <div class="cardName">吉祥寺<span class="cardJob">小美工</span></div>
-            <div class="cardCompany">佳途科技(杭州)有限公司</div>
-            <div style="margin-bottom: 5px;">138-5784-4501</div>
-            <div style="margin-bottom: 5px;">xumeng@jiatu.com</div>
+            <div class="cardCompany">福建印记科技有限公司</div>
+            <div style="margin-bottom: 5px;">138-8888-8888</div>
+            <div style="margin-bottom: 5px;">xu***@yinji.com</div>
             <div style="width: 178px;">浙江省杭州市拱墅区通运路999号汽车电商园B座601-1</div>
           </div>
           <div @click="cropper">
@@ -38,9 +38,9 @@
           </div>
           <div>
             <div class="cardName">吉祥寺<span class="cardJob">小美工</span></div>
-            <div class="cardCompany">佳途科技(杭州)有限公司</div>
-            <div style="margin-bottom: 5px;">138-5784-4501</div>
-            <div style="margin-bottom: 5px;">xumeng@jiatu.com</div>
+            <div class="cardCompany">福建印记科技有限公司</div>
+            <div style="margin-bottom: 5px;">138-8888-8888</div>
+            <div style="margin-bottom: 5px;">xu***@yinji.com</div>
             <div style="width: 178px;">浙江省杭州市拱墅区通运路999号汽车电商园B座601-1</div>
           </div>
         </div>
@@ -60,9 +60,9 @@
         <div class="disflex">
           <div class="flex">
             <div class="cardName">吉祥寺<span class="cardJob">小美工</span></div>
-            <div class="cardCompany">佳途科技(杭州)有限公司</div>
-            <div style="margin-bottom: 5px;">138-5784-4501</div>
-            <div style="margin-bottom: 5px;">xumeng@jiatu.com</div>
+            <div class="cardCompany">福建印记科技有限公司</div>
+            <div style="margin-bottom: 5px;">138-8888-8888</div>
+            <div style="margin-bottom: 5px;">xu***@yinji.com</div>
             <div style="width: 178px;">浙江省杭州市拱墅区通运路999号汽车电商园B座601-1</div>
           </div>
           <div @click="cropper">
@@ -527,7 +527,8 @@ export default {
       }
     },
     verification () {
-      if (this.dataInfo.name !== '') {
+      console.log(this.dataInfo)
+      if (this.dataInfo.name === '') {
         wx.showToast({
           title: '请填写姓名',
           icon: 'none',
@@ -537,7 +538,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.position) {
+      if (this.dataInfo.position === '') {
         wx.showToast({
           title: '请填写职位',
           icon: 'none',
@@ -547,7 +548,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.company) {
+      if (this.dataInfo.company === '') {
         wx.showToast({
           title: '请填写公司',
           icon: 'none',
@@ -557,7 +558,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.email) {
+      if (this.dataInfo.email === '') {
         wx.showToast({
           title: '请填写邮箱',
           icon: 'none',
@@ -567,7 +568,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.phone) {
+      if (this.dataInfo.phone === '') {
         wx.showToast({
           title: '请填写电话',
           icon: 'none',

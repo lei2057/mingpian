@@ -92,7 +92,8 @@
       </div>
       <!-- 模板 end -->
       <div style="margin: 20px 0;">
-        <button class="button2" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">收藏名片</button>
+        <button class="button2" v-if="show" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">收藏名片</button>
+        <button class="button2" v-else @click="collection">收藏名片</button>
       </div>
       <div class="detail-item">
         <div class="item-title flex-align"><span class="item-i"></span>个人简介</div>
@@ -127,15 +128,14 @@ export default {
       state: 0,
       templateStyle: '1',
       fontStyle: '1',
-      bg: ''
+      bg: '',
+      show: false
     }
   },
   components: {
     navigation
   },
   onLoad (options) {
-    console.log(options)
-    console.log('sdasdas')
     var self = this
     wx.getSystemInfo({
       success (system) {
@@ -154,13 +154,11 @@ export default {
     self.$http.get({
       url: `/vcardInfo/getVcardById?id=${self.userId}`
     }).then(res => {
-      console.log(res)
       res.data[0].album = res.data[0].album.split(',')
       self.dataInfo = res.data[0]
       this.$http.get({
         url: `/vcardBgimage/getImageById?id=${res.data[0].bgImgId}`
       }).then(res => {
-        console.log(res)
         this.bg = res.data.image
         if (res.data.name === '1') {
           this.fontStyle = '2'
@@ -171,13 +169,17 @@ export default {
       this.$http.get({
         url: `/vcardTemplate/getTemplateById?id=${res.data[0].templateId}`
       }).then(res => {
-        console.log(res)
         this.templateStyle = res.data.name
       })
     })
   },
   onShow () {
-
+    let userInfo = wx.getStorageSync('userInfo')
+    if (userInfo) {
+      this.show = false
+    } else {
+      this.show = true
+    }
   },
   methods: {
     translate () {
@@ -256,6 +258,33 @@ export default {
         }
       })
     },
+    collection () {
+      let userInfo = wx.getStorageSync('userInfo')
+      this.$http.post({
+        url: '/vcardRelation/addVcardRelation',
+        header: userInfo.token,
+        data: {
+          xcxOpenId: userInfo.openId,
+          vcardId: this.userId
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          wx.showToast({
+            title: '收藏成功',
+            icon: 'success',
+            duration: 1500,
+            success: (result) => {
+              setTimeout(() => {
+                wx.switchTab({
+                  url: '../index/main'
+                })
+              }, 1500)
+            }
+          })
+        }
+      })
+    },
     getPhoneNumber (e) {
       console.log(e)
       if (e.mp.detail.errMsg === 'getPhoneNumber:ok') {
@@ -269,23 +298,41 @@ export default {
                 encDataStr: e.mp.detail.encryptedData
               }
             }).then(res => {
-              console.log(res)
-              wx.setStorageSync('userInfo', res.data)
-              this.$http.post({
-                url: '/vcardRelation/addVcardRelation',
-                header: res.data.token,
-                data: {
-                  xcxOpenId: res.data.openId,
-                  vcardId: this.userId
-                }
-              }).then(res => {
+              if (res.code === 200) {
                 console.log(res)
-                wx.showToast({
-                  title: '收藏成功',
-                  icon: 'success',
-                  duration: 2000
+                wx.setStorageSync('userInfo', res.data)
+                this.$http.post({
+                  url: '/vcardRelation/addVcardRelation',
+                  header: res.data.token,
+                  data: {
+                    xcxOpenId: res.data.openId,
+                    vcardId: this.userId
+                  }
+                }).then(res => {
+                  console.log(res)
+                  if (res.code === 200) {
+                    wx.showToast({
+                      title: '收藏成功',
+                      icon: 'success',
+                      duration: 1500,
+                      success: (result) => {
+                        setTimeout(() => {
+                          wx.switchTab({
+                            url: '../index/main'
+                          })
+                        }, 1500)
+                      }
+                    })
+                  }
                 })
-              })
+              } else {
+                wx.showToast({
+                  title: '登陆失败，请重新登陆',
+                  icon: 'none',
+                  duration: 2000,
+                  mask: false
+                })
+              }
             })
           }
         })

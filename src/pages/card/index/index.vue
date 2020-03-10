@@ -25,7 +25,6 @@
 export default {
   data () {
     return {
-      userInfo: {},
       dataInfo: [],
       show: false
     }
@@ -34,33 +33,25 @@ export default {
 
   },
   onShow () {
-    this.userInfo = wx.getStorageSync('userInfo')
-    let that = this
-    wx.checkSession({
-      success (res) {
-        console.log(res)
-        if (res.errMsg === 'checkSession:ok' && that.userInfo) {
-          that.show = true
-        }
-      },
-      fail (res) {
-        // session_key 已经失效，需要重新执行登录流程
-        console.log(res)
-        that.show = false
-        wx.removeStorageSync('userInfo')
-      }
-    })
+    let userInfo = wx.getStorageSync('userInfo')
     this.dataInfo = []
     this.$http.get({
-      url: `/vcardInfo/getVcardList?openId=${this.userInfo.openId}`,
-      header: this.userInfo.token
+      url: `/vcardInfo/getVcardList?openId=${userInfo.openId}`,
+      header: userInfo.token
     }).then(res => {
-      for (var k in res.data) {
-        let data = {
-          time: k,
-          data: res.data[k]
+      console.log(res)
+
+      if (res.message === '暂无人脉') {
+        this.show = false
+      } else {
+        this.show = true
+        for (var k in res.data) {
+          let data = {
+            time: k,
+            data: res.data[k]
+          }
+          this.dataInfo.push(data)
         }
-        this.dataInfo.push(data)
       }
     })
   },

@@ -34,7 +34,7 @@
             </div>
           </div>
         </div>
-        <button class="button2" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">登陆</button>
+        <button class="button2" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">登录</button>
       </div>
       <div v-else-if="show===2">
         <div class="card-wrapper" style="background: #fff;">
@@ -342,11 +342,10 @@ export default {
       this.fetchInfo()
     },
     templateSelect () {
-      console.log(this.backgroundIndex)
-      console.log(this.dataInfo.bgImgId)
       let userInfo = wx.getStorageSync('userInfo')
       if (userInfo) {
         this.show1 = true
+        console.log('asdasdasds')
         wx.hideTabBar({
           animation: false,
           success: (result) => {
@@ -370,23 +369,27 @@ export default {
       this.templateId = item.id
     },
     backgroundOpt (index, item) {
+      console.log(index, item)
       this.backgroundIndex = index
       this.bg = item.image
       this.bgId = item.id
     },
     submit () {
+      console.log(this.bgId, this.templateId)
       let userInfo = wx.getStorageSync('userInfo')
       this.$http.get({
         url: `/vcardBgimage/saveImageId?userId=${userInfo.userId}&id=${this.bgId}`,
         header: userInfo.token
       }).then(res => {
         console.log(res)
+        this.fetchInfo()
       })
       this.$http.get({
         url: `/vcardTemplate/saveTemplateId?userId=${userInfo.userId}&id=${this.templateId}`,
         header: userInfo.token
       }).then(res => {
         console.log(res)
+        this.fetchInfo()
       })
       wx.showToast({
         title: '修改成功',
@@ -394,7 +397,6 @@ export default {
         duration: 1500
       })
       this.show1 = false
-      this.fetchInfo()
       setTimeout(() => {
         wx.showTabBar({
           animation: false,
@@ -481,35 +483,44 @@ export default {
                 encDataStr: e.mp.detail.encryptedData
               }
             }).then(res => {
-              console.log(res)
-              wx.setStorageSync('userInfo', res.data)
-              this.$http.get({
-                url: `/vcardInfo/selectById?id=${res.data.userId}`,
-                header: res.data.token
-              }).then(val => {
-                this.show = 2
-                if (val.data.name !== '' && val.data.position !== '' && val.data.company !== '' && val.data.email !== '') {
-                  this.dataInfo = val.data
-                  this.show = 3
-                  this.$http.get({
-                    url: `/vcardBgimage/getImageById?id=${val.data.bgImgId}`,
-                    header: res.data.token
-                  }).then(rese => {
-                    this.bg = rese.data.image
-                    if (rese.data.name === '1') {
-                      this.fontStyle = '2'
-                    } else {
-                      this.fontStyle = '1'
-                    }
-                  })
-                  this.$http.get({
-                    url: `/vcardTemplate/getTemplateById?id=${val.data.templateId}`,
-                    header: res.data.token
-                  }).then(rese => {
-                    this.templateStyle = rese.data.name
-                  })
-                }
-              })
+              if (res.code === 200) {
+                console.log(res)
+                wx.setStorageSync('userInfo', res.data)
+                this.$http.get({
+                  url: `/vcardInfo/selectById?id=${res.data.userId}`,
+                  header: res.data.token
+                }).then(val => {
+                  this.show = 2
+                  if (val.data.name !== '' && val.data.position !== '' && val.data.company !== '' && val.data.email !== '') {
+                    this.dataInfo = val.data
+                    this.show = 3
+                    this.$http.get({
+                      url: `/vcardBgimage/getImageById?id=${val.data.bgImgId}`,
+                      header: res.data.token
+                    }).then(rese => {
+                      this.bg = rese.data.image
+                      if (rese.data.name === '1') {
+                        this.fontStyle = '2'
+                      } else {
+                        this.fontStyle = '1'
+                      }
+                    })
+                    this.$http.get({
+                      url: `/vcardTemplate/getTemplateById?id=${val.data.templateId}`,
+                      header: res.data.token
+                    }).then(rese => {
+                      this.templateStyle = rese.data.name
+                    })
+                  }
+                })
+              } else {
+                wx.showToast({
+                  title: '登陆失败，请重新登陆',
+                  icon: 'none',
+                  duration: 2000,
+                  mask: false
+                })
+              }
             })
           }
         })

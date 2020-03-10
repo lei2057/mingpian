@@ -149,41 +149,7 @@ export default {
   },
   onShow () {
     this.qrShow = false
-    var self = this
-    self.userInfo = wx.getStorageSync('userInfo')
-    if (self.userInfo) {
-      self.$http.get({
-        url: `/vcardInfo/selectById?id=${self.userInfo.userId}`,
-        header: self.userInfo.token
-      }).then(res => {
-        console.log(res, '2')
-        self.show = 2
-        if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
-          self.dataInfo = res.data
-          console.log('3')
-          self.show = 3
-          self.$http.get({
-            url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-            header: self.userInfo.token
-          }).then(res => {
-            console.log(res)
-            self.bg = res.data.image
-            if (res.data.name === '1') {
-              self.fontStyle = '2'
-            } else {
-              self.fontStyle = '1'
-            }
-          })
-          self.$http.get({
-            url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-            header: self.userInfo.token
-          }).then(res => {
-            console.log(res)
-            self.templateStyle = res.data.name
-          })
-        }
-      })
-    }
+    this.cardInfo()
   },
   onUnload () {
     this.state = 0
@@ -202,6 +168,43 @@ export default {
     }
   },
   methods: {
+    cardInfo () {
+      let self = this
+      self.userInfo = wx.getStorageSync('userInfo')
+      if (self.userInfo) {
+        self.$http.get({
+          url: `/vcardInfo/selectById?id=${self.userInfo.userId}`,
+          header: self.userInfo.token
+        }).then(res => {
+          console.log(res, '2')
+          self.show = 2
+          if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+            self.dataInfo = res.data
+            console.log('3')
+            self.show = 3
+            self.$http.get({
+              url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
+              header: self.userInfo.token
+            }).then(res => {
+              console.log(res)
+              self.bg = res.data.image
+              if (res.data.name === '1') {
+                self.fontStyle = '2'
+              } else {
+                self.fontStyle = '1'
+              }
+            })
+            self.$http.get({
+              url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
+              header: self.userInfo.token
+            }).then(res => {
+              console.log(res)
+              self.templateStyle = res.data.name
+            })
+          }
+        })
+      }
+    },
     onClose () {
       this.qrShow = false
     },
@@ -310,22 +313,63 @@ export default {
       if (e.mp.detail.errMsg === 'getPhoneNumber:ok') {
         wx.login({
           success: res => {
-            this.$http
-              .post({
-                url: '/xcxLoginVcard',
-                data: {
-                  code: res.code,
-                  ivStr: e.mp.detail.iv,
-                  encDataStr: e.mp.detail.encryptedData
-                }
-              })
-              .then(res => {
-                console.log(res)
+            this.$http.post({
+              url: '/xcxLoginVcard',
+              data: {
+                code: res.code,
+                ivStr: e.mp.detail.iv,
+                encDataStr: e.mp.detail.encryptedData
+              }
+            }).then(res => {
+              console.log(res)
+              if (res.code === 200) {
                 wx.setStorageSync('userInfo', res.data)
-                wx.navigateTo({
-                  url: '../myCard/main'
+                this.userInfo = res.data
+                // let self = this
+                this.$http.get({
+                  url: `/vcardInfo/selectById?id=${res.data.userId}`,
+                  header: res.data.token
+                }).then(res => {
+                  console.log(res, '2')
+                  this.show = 2
+                  if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+                    this.dataInfo = res.data
+                    console.log('3')
+                    this.show = 3
+                    this.$http.get({
+                      url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
+                      header: res.data.token
+                    }).then(res => {
+                      console.log(res)
+                      this.bg = res.data.image
+                      if (res.data.name === '1') {
+                        this.fontStyle = '2'
+                      } else {
+                        this.fontStyle = '1'
+                      }
+                    })
+                    this.$http.get({
+                      url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
+                      header: res.data.token
+                    }).then(res => {
+                      console.log(res)
+                      this.templateStyle = res.data.name
+                    })
+                  } else {
+                    wx.navigateTo({
+                      url: '/pages/index/myCard/main'
+                    })
+                  }
                 })
-              })
+              } else {
+                wx.showToast({
+                  title: '登陆失败，请重新登陆',
+                  icon: 'none',
+                  duration: 2000,
+                  mask: false
+                })
+              }
+            })
           }
         })
       }

@@ -30,7 +30,7 @@ import md5 from 'md5'
 let wecropper
 const device = wx.getSystemInfoSync() // 获取设备信息
 const width = device.windowWidth // 示例为一个与屏幕等宽的正方形裁剪框
-const height = device.windowHeight + 30
+const height = device.windowHeight
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 export default {
