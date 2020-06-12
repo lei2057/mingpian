@@ -122,15 +122,13 @@ export default {
     this.userId = options.userId
     this.userInfo = wx.getStorageSync('userInfo')
     this.$http.get({
-      url: `/vcardInfo/selectById?id=${options.userId}`,
-      header: this.userInfo.token
+      url: `/vcardInfo/selectById?id=${options.userId}`
     }).then(res => {
       console.log(res)
       res.data.album = res.data.album.split(',')
       this.dataInfo = res.data
       this.$http.get({
-        url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-        header: this.userInfo.token
+        url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
       }).then(res => {
         console.log(res)
         this.bg = res.data.image
@@ -141,8 +139,7 @@ export default {
         }
       })
       this.$http.get({
-        url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-        header: this.userInfo.token
+        url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
       }).then(res => {
         console.log(res)
         this.templateStyle = res.data.name

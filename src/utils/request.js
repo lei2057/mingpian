@@ -1,9 +1,10 @@
 import md5 from 'md5'
-// const host = 'https://gate.test.jiatu360.cn/api/vcard'
-// const host = 'http://192.168.0.178:8765/api/vcard'
-const host = 'https://gate.jiatu360.cn/api/vcard'
+const host = 'https://gate.test.jiatu360.cn/api/vcard'
+// const host = 'https://gate.jiatu360.cn/api/vcard'
 var date = new Date()
 var timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
+var token = wx.getStorageSync('userInfo').token
+
 function requestGet (url, method, data, header) {
   wx.showLoading({
     title: '加载中' // 数据请求前loading
@@ -17,7 +18,7 @@ function requestGet (url, method, data, header) {
         'Content-type': 'application/json',
         'sign': md5('t=' + timeNum + '&jiatu2019yinji'),
         'timeStrap': timeNum,
-        'token': header
+        'token': token
       },
       success: function (res) {
         wx.hideLoading()
@@ -65,7 +66,7 @@ function requestPost (url, method, data, header) {
         'Content-type': 'application/json',
         'sign': md5('t=' + timeNum + '&' + signStr + '&jiatu2019yinji'),
         'timeStrap': timeNum,
-        'token': header
+        'token': token
       } : {
         'Content-type': 'application/json',
         'sign': md5('t=' + timeNum + '&' + signStr + '&jiatu2019yinji'),

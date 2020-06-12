@@ -106,37 +106,37 @@
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">姓名</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入姓名" v-model="dataInfo.name" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入姓名" v-model.trim="dataInfo.name" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">公司</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请填写公司名称" v-model="dataInfo.company" class="flex" style="color: #000;">
+          <input type="text" placeholder="请填写公司名称" v-model.trim="dataInfo.company" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">职位</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请填写职位" v-model="dataInfo.position" class="flex" style="color: #000;">
+          <input type="text" placeholder="请填写职位" v-model.trim="dataInfo.position" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">手机</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入手机号" v-model="dataInfo.phone" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入手机号" v-model.trim="dataInfo.phone" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">邮箱</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入邮箱号" v-model="dataInfo.email" class="flex" style="color: #000;">
-        </div>
-        <div class="disflex border_cell" style="padding: 8px 0;">
-          <div class="title">微信</div>
-          <div class="tag">*</div>
-          <input type="text" placeholder="请输入微信" v-model="dataInfo.wxNumber" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入邮箱号" v-model.trim="dataInfo.email" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">地址</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请填写地址" v-model="dataInfo.address" class="flex" style="color: #000;">
+          <input type="text" placeholder="请填写地址" v-model.trim="dataInfo.address" class="flex" style="color: #000;">
+        </div>
+        <div class="disflex border_cell" style="padding: 8px 0;">
+          <div class="title">微信</div>
+          <div class="tag">*</div>
+          <input type="text" placeholder="请输入微信" v-model.trim="dataInfo.wxNumber" class="flex" style="color: #000;">
         </div>
       </div>
     </div>
@@ -146,22 +146,22 @@
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">Name</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入英文名称" v-model="dataInfo.nameEn" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入英文名称" v-model.trim="dataInfo.nameEn" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">Company</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请填写公司英文名称" v-model="dataInfo.companyEn" class="flex" style="color: #000;">
+          <input type="text" placeholder="请填写公司英文名称" v-model.trim="dataInfo.companyEn" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">Position</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入英文职位" v-model="dataInfo.positionEn" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入英文职位" v-model.trim="dataInfo.positionEn" class="flex" style="color: #000;">
         </div>
         <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">Address</div>
           <div class="tag">*</div>
-          <input type="text" placeholder="请输入英文地址" v-model="dataInfo.addressEn" class="flex" style="color: #000;">
+          <input type="text" placeholder="请输入英文地址" v-model.trim="dataInfo.addressEn" class="flex" style="color: #000;">
         </div>
       </div>
     </div>
@@ -205,7 +205,7 @@
               <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg'><image src='../../../assets/icon-delete.png' /></div>
           </view>
         </view>
-        <div class="pic-wrapper" @click="chooseImg">
+        <div class="pic-wrapper" @click="chooseImg" v-if="companyPic.length<1">
           <div style="width: 24px;height: 24px;margin:0 auto 10px;padding-top: 40px;"><img src="../../../assets/icon-tpbj.png"></div>
           <div style="text-align: center;">上传图片</div>
         </div>
@@ -231,6 +231,7 @@
 </template>
 
 <script>
+import host from '@/utils/request'
 import md5 from 'md5'
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
@@ -241,7 +242,7 @@ export default {
       companyPic: [],
       backgroundInfo: [],
       templateInfo: [],
-      backgroundIndex: -1,
+      backgroundIndex: 0,
       templateIndex: 0,
       show1: true,
       show2: true,
@@ -275,7 +276,8 @@ export default {
       userInfo: {},
       templateStyle: '1',
       bg: '',
-      fontStyle: '1'
+      fontStyle: '1',
+      host: ''
     }
   },
   onLoad (options) {
@@ -289,16 +291,17 @@ export default {
     }
   },
   onShow () {
+    this.host = host.host.split('vcard')[0]
     this.userInfo = wx.getStorageSync('userInfo')
     this.$http.get({
-      url: '/vcardBgimage/getAllImage',
-      header: this.userInfo.token
+      url: '/vcardBgimage/getAllImage'
     }).then(res => {
       this.backgroundInfo = res.data
+      this.bg = res.data[0].image
+      this.fontStyle = '2'
     })
     this.$http.get({
-      url: '/vcardTemplate/getAllTemplate',
-      header: this.userInfo.token
+      url: '/vcardTemplate/getAllTemplate'
     }).then(res => {
       this.templateInfo = res.data
     })
@@ -313,9 +316,14 @@ export default {
           sourceType: ['album', 'camera'], // album 从相册选图，camera 使用相机，默认二者都有
           success: function (res) {
             console.log(res, 'ssssss')
+            wx.showToast({
+              title: '正在上传...',
+              icon: 'loading',
+              mask: true
+            })
             // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
             wx.uploadFile({
-              url: 'https://gate.test.jiatu360.cn/api/tool/oss/xcxUpload',
+              url: that.host + 'tool/oss/xcxUpload',
               filePath: res.tempFilePaths[0],
               name: 'file',
               header: {
@@ -332,15 +340,11 @@ export default {
               success (res) {
                 console.log(res)
                 let data = JSON.parse(res.data)
+                wx.hideToast()
                 if (data.code === 200) {
                   let tempFilePaths = data.data.url
                   console.log(tempFilePaths)
-                  // wx.showToast({
-                  //   title: '正在上传...',
-                  //   icon: 'loading',
-                  //   mask: true,
-                  //   duration: 10000
-                  // });
+
                   that.companyPic.push(tempFilePaths)
                   console.log(that.companyPic)
                 } else {
@@ -381,9 +385,14 @@ export default {
           sizeType: ['original', 'compressed'], // original 原图，compressed 压缩图，默认二者都有
           sourceType: ['album', 'camera'], // album 从相册选图，camera 使用相机，默认二者都有
           success: function (res) {
-          // 返回选定照片的本地文件路径列表
+            wx.showToast({
+              title: '正在上传...',
+              icon: 'loading',
+              mask: true
+            })
+            // 返回选定照片的本地文件路径列表
             wx.uploadFile({
-              url: 'https://gate.test.jiatu360.cn/api/tool/oss/xcxUpload',
+              url: that.host + 'tool/oss/xcxUpload',
               filePath: res.tempFilePaths[0],
               name: 'file',
               header: {
@@ -400,15 +409,10 @@ export default {
               success (res) {
                 console.log(res)
                 let data = JSON.parse(res.data)
+                wx.hideToast()
                 if (data.code === 200) {
                   let tempFilePaths = data.data.url
                   console.log(tempFilePaths)
-                  // wx.showToast({
-                  //   title: '正在上传...',
-                  //   icon: 'loading',
-                  //   mask: true,
-                  //   duration: 10000
-                  // });
                   that.pics.push(tempFilePaths)
                   console.log(that.pics)
                 } else {
@@ -496,7 +500,6 @@ export default {
       if (this.verification()) {
         this.$http.post({
           url: '/vcardInfo/updateVcard',
-          header: this.userInfo.token,
           data: this.dataInfo
         }).then(res => {
           console.log(res)
@@ -527,20 +530,9 @@ export default {
       }
     },
     verification () {
-      console.log(this.dataInfo)
       if (this.dataInfo.name === '') {
         wx.showToast({
           title: '请填写姓名',
-          icon: 'none',
-          duration: 1500,
-          mask: false,
-          success: (result) => {}
-        })
-        return false
-      }
-      if (this.dataInfo.position === '') {
-        wx.showToast({
-          title: '请填写职位',
           icon: 'none',
           duration: 1500,
           mask: false,
@@ -558,6 +550,26 @@ export default {
         })
         return false
       }
+      if (this.dataInfo.position === '') {
+        wx.showToast({
+          title: '请填写职位',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.phone === '') {
+        wx.showToast({
+          title: '请填写手机',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
       if (this.dataInfo.email === '') {
         wx.showToast({
           title: '请填写邮箱',
@@ -568,9 +580,59 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.phone === '') {
+      if (this.dataInfo.address === '') {
         wx.showToast({
-          title: '请填写电话',
+          title: '请填写地址',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.wxNumber === '') {
+        wx.showToast({
+          title: '请填写微信',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.nameEn === '') {
+        wx.showToast({
+          title: '请填写英文名称',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.companyEn === '') {
+        wx.showToast({
+          title: '请填写公司英文名称',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.positionEn === '') {
+        wx.showToast({
+          title: '请填写英文职位',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.addressEn === '') {
+        wx.showToast({
+          title: '请填写英文地址',
           icon: 'none',
           duration: 1500,
           mask: false,
@@ -586,6 +648,7 @@ export default {
       this.templateStyle = item.name
     },
     backgroundOpt (index, item) {
+      console.log(index, item)
       this.dataInfo.bgImgId = item.id + ''
       this.backgroundIndex = index
       this.bg = item.image

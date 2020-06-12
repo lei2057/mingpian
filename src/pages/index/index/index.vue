@@ -173,8 +173,7 @@ export default {
       self.userInfo = wx.getStorageSync('userInfo')
       if (self.userInfo) {
         self.$http.get({
-          url: `/vcardInfo/selectById?id=${self.userInfo.userId}`,
-          header: self.userInfo.token
+          url: `/vcardInfo/selectById?id=${self.userInfo.userId}`
         }).then(res => {
           console.log(res, '2')
           self.show = 2
@@ -183,8 +182,7 @@ export default {
             console.log('3')
             self.show = 3
             self.$http.get({
-              url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-              header: self.userInfo.token
+              url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
             }).then(res => {
               console.log(res)
               self.bg = res.data.image
@@ -195,8 +193,7 @@ export default {
               }
             })
             self.$http.get({
-              url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-              header: self.userInfo.token
+              url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
             }).then(res => {
               console.log(res)
               self.templateStyle = res.data.name
@@ -211,8 +208,7 @@ export default {
     myQrcode () {
       this.qrShow = true
       this.$http.get({
-        url: `/xcxShareQRCode/${this.userInfo.userId}`,
-        header: this.userInfo.token
+        url: `/xcxShareQRCode/${this.userInfo.userId}`
       }).then(res => {
         console.log(res)
         this.qrCodeImg = res.data.shareQR
@@ -327,8 +323,7 @@ export default {
                 this.userInfo = res.data
                 // let self = this
                 this.$http.get({
-                  url: `/vcardInfo/selectById?id=${res.data.userId}`,
-                  header: res.data.token
+                  url: `/vcardInfo/selectById?id=${res.data.userId}`
                 }).then(res => {
                   console.log(res, '2')
                   this.show = 2
@@ -337,8 +332,7 @@ export default {
                     console.log('3')
                     this.show = 3
                     this.$http.get({
-                      url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-                      header: res.data.token
+                      url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
                     }).then(res => {
                       console.log(res)
                       this.bg = res.data.image
@@ -349,8 +343,7 @@ export default {
                       }
                     })
                     this.$http.get({
-                      url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-                      header: res.data.token
+                      url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
                     }).then(res => {
                       console.log(res)
                       this.templateStyle = res.data.name

@@ -14,18 +14,20 @@
         @tap="uploadTap">
         上传图片
       </div>
-      <div
+      <button
         class="getCropperImage btn"
+        :disabled="isDisable"
         :style="{ backgroundColor: cropperOpt.boundStyle.color }"
         @tap="getCropperImage">
         生成图片
-      </div>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import MpvueCropper from 'mpvue-cropper'
+import host from '@/utils/request'
 import md5 from 'md5'
 let wecropper
 const device = wx.getSystemInfoSync() // 获取设备信息
@@ -56,7 +58,9 @@ export default {
           lineWidth: 1
         }
       },
-      pageKey: 0
+      pageKey: 0,
+      host: '',
+      isDisable: false
     }
   },
   components: {
@@ -69,7 +73,7 @@ export default {
     console.log(height)
   },
   onShow () {
-
+    this.host = host.host.split('vcard')[0]
   },
   methods: {
     cropperReady (...args) {
@@ -99,11 +103,18 @@ export default {
     getCropperImage () {
       let userInfo = wx.getStorageSync('userInfo')
       var that = this
+      that.isDisable = true
+      setTimeout(() => {
+        that.isDisable = false
+      }, 2000)
+      wx.showLoading({
+        title: '上传中...'
+      })
       wecropper.getCropperImage({ original: true })
         .then((src) => {
           console.log(src, 'wancheng')
           wx.uploadFile({
-            url: 'https://gate.test.jiatu360.cn/api/tool/oss/xcxUpload',
+            url: that.host + 'tool/oss/xcxUpload',
             filePath: src,
             name: 'file',
             header: {
@@ -121,6 +132,7 @@ export default {
               console.log(res)
               let data = JSON.parse(res.data)
               if (data.code === 200) {
+                wx.hideLoading()
                 if (that.pageKey === '1') {
                   wx.redirectTo({
                     url: '../../index/myCard/main?avatar=' + data.data.url
@@ -198,8 +210,9 @@ export default {
     line-height: 50px;
 }
 
-.cropper-buttons .upload, .cropper-buttons .getCropperImage{
-    text-align: center;
+.cropper-buttons .upload{
+    border: 1px solid;
+    border-radius: 2px;
 }
 
 .cropper{
@@ -218,5 +231,7 @@ export default {
     padding: 0 24rpx;
     border-radius: 2px;
     color: #ffffff;
+    margin: 0;
+    text-align: center;
 }
 </style>

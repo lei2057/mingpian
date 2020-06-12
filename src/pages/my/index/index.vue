@@ -247,47 +247,39 @@ export default {
   onShow () {
     this.userInfo = wx.getStorageSync('userInfo')
     this.$http.get({
-      url: '/vcardBgimage/getAllImage',
-      header: this.userInfo.token
+      url: '/vcardBgimage/getAllImage'
     }).then(res => {
       this.backgroundInfo = res.data
     })
     this.$http.get({
-      url: '/vcardTemplate/getAllTemplate',
-      header: this.userInfo.token
+      url: '/vcardTemplate/getAllTemplate'
     }).then(res => {
       this.templateInfo = res.data
     })
     if (this.userInfo) {
       this.$http.get({
-        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`,
-        header: this.userInfo.token
+        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`
       }).then(res => {
         console.log(res.data)
         this.show = 2
-        if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
-          this.dataInfo = res.data
-          this.show = 3
-          this.$http.get({
-            url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-            header: this.userInfo.token
-          }).then(res => {
-          // console.log(res)
-            this.bg = res.data.image
-            if (res.data.name === '1') {
-              this.fontStyle = '2'
-            } else {
-              this.fontStyle = '1'
-            }
-          })
-          this.$http.get({
-            url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-            header: this.userInfo.token
-          }).then(res => {
-          // console.log(res)
-            this.templateStyle = res.data.name
-          })
-        }
+        // if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+        this.dataInfo = res.data
+        this.$http.get({
+          url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
+        }).then(res => {
+          this.bg = res.data.image
+          if (res.data.name === '1') {
+            this.fontStyle = '2'
+          } else {
+            this.fontStyle = '1'
+          }
+        })
+        this.$http.get({
+          url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
+        }).then(res => {
+          this.templateStyle = res.data.name
+        })
+        // }
       })
     }
   },
@@ -297,34 +289,32 @@ export default {
   methods: {
     fetchInfo () {
       this.$http.get({
-        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`,
-        header: this.userInfo.token
+        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`
       }).then(res => {
         console.log(res.data, 'aaaa')
+        this.dataInfo = res.data
         this.show = 2
-        if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
-          this.dataInfo = res.data
-          this.show = 3
-          this.$http.get({
-            url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-            header: this.userInfo.token
-          }).then(res => {
-          // console.log(res)
-            this.bg = res.data.image
-            if (res.data.name === '1') {
-              this.fontStyle = '2'
-            } else {
-              this.fontStyle = '1'
-            }
-          })
-          this.$http.get({
-            url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-            header: this.userInfo.token
-          }).then(res => {
-          // console.log(res)
-            this.templateStyle = res.data.name
-          })
-        }
+        // if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+        //   this.dataInfo = res.data
+        //   this.show = 3
+        //   this.$http.get({
+        //     url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
+        //   }).then(res => {
+        //   // console.log(res)
+        //     this.bg = res.data.image
+        //     if (res.data.name === '1') {
+        //       this.fontStyle = '2'
+        //     } else {
+        //       this.fontStyle = '1'
+        //     }
+        //   })
+        //   this.$http.get({
+        //     url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
+        //   }).then(res => {
+        //   // console.log(res)
+        //     this.templateStyle = res.data.name
+        //   })
+        // }
       })
     },
     onClose () {
@@ -378,15 +368,13 @@ export default {
       console.log(this.bgId, this.templateId)
       let userInfo = wx.getStorageSync('userInfo')
       this.$http.get({
-        url: `/vcardBgimage/saveImageId?userId=${userInfo.userId}&id=${this.bgId}`,
-        header: userInfo.token
+        url: `/vcardBgimage/saveImageId?userId=${userInfo.userId}&id=${this.bgId}`
       }).then(res => {
         console.log(res)
         this.fetchInfo()
       })
       this.$http.get({
-        url: `/vcardTemplate/saveTemplateId?userId=${userInfo.userId}&id=${this.templateId}`,
-        header: userInfo.token
+        url: `/vcardTemplate/saveTemplateId?userId=${userInfo.userId}&id=${this.templateId}`
       }).then(res => {
         console.log(res)
         this.fetchInfo()
@@ -407,7 +395,11 @@ export default {
     details () {
       let userInfo = wx.getStorageSync('userInfo')
       if (userInfo) {
-        wx.navigateTo({url: '../personal/main'})
+        if (this.dataInfo.name === '' && this.dataInfo.position === '' && this.dataInfo.company === '' && this.dataInfo.email === '') {
+          wx.navigateTo({url: '/pages/index/myCard/main'})
+        } else {
+          wx.navigateTo({url: '../personal/main'})
+        }
       } else {
         wx.showToast({
           title: '登陆即可使用',
@@ -487,16 +479,14 @@ export default {
                 console.log(res)
                 wx.setStorageSync('userInfo', res.data)
                 this.$http.get({
-                  url: `/vcardInfo/selectById?id=${res.data.userId}`,
-                  header: res.data.token
+                  url: `/vcardInfo/selectById?id=${res.data.userId}`
                 }).then(val => {
                   this.show = 2
                   if (val.data.name !== '' && val.data.position !== '' && val.data.company !== '' && val.data.email !== '') {
                     this.dataInfo = val.data
                     this.show = 3
                     this.$http.get({
-                      url: `/vcardBgimage/getImageById?id=${val.data.bgImgId}`,
-                      header: res.data.token
+                      url: `/vcardBgimage/getImageById?id=${val.data.bgImgId}`
                     }).then(rese => {
                       this.bg = rese.data.image
                       if (rese.data.name === '1') {
@@ -506,8 +496,7 @@ export default {
                       }
                     })
                     this.$http.get({
-                      url: `/vcardTemplate/getTemplateById?id=${val.data.templateId}`,
-                      header: res.data.token
+                      url: `/vcardTemplate/getTemplateById?id=${val.data.templateId}`
                     }).then(rese => {
                       this.templateStyle = rese.data.name
                     })

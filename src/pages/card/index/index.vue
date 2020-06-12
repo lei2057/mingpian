@@ -36,8 +36,7 @@ export default {
     let userInfo = wx.getStorageSync('userInfo')
     this.dataInfo = []
     this.$http.get({
-      url: `/vcardInfo/getVcardList?openId=${userInfo.openId}`,
-      header: userInfo.token
+      url: `/vcardInfo/getVcardList?openId=${userInfo.openId}`
     }).then(res => {
       console.log(res)
 

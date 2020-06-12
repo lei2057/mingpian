@@ -218,6 +218,7 @@
 </template>
 
 <script>
+import host from '@/utils/request'
 import md5 from 'md5'
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
@@ -260,15 +261,15 @@ export default {
       userInfo: {},
       templateStyle: '1',
       fontStyle: '1',
-      bg: ''
+      bg: '',
+      host: ''
     }
   },
   onLoad (options) {
     console.log(options)
     this.userInfo = wx.getStorageSync('userInfo')
     this.$http.get({
-      url: `/vcardInfo/selectById?id=${this.userInfo.userId}`,
-      header: this.userInfo.token
+      url: `/vcardInfo/selectById?id=${this.userInfo.userId}`
     }).then(res => {
       console.log(res, 'aaaaa')
       this.dataInfo = res.data
@@ -286,8 +287,7 @@ export default {
         this.companyPic.push(res.data.companyPic)
       }
       this.$http.get({
-        url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`,
-        header: this.userInfo.token
+        url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
       }).then(res => {
         this.bg = res.data.image
         if (res.data.name === '1') {
@@ -297,8 +297,7 @@ export default {
         }
       })
       this.$http.get({
-        url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`,
-        header: this.userInfo.token
+        url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
       }).then(res => {
         this.templateStyle = res.data.name
       })
@@ -317,7 +316,7 @@ export default {
     }, 1000)
   },
   onShow () {
-
+    this.host = host.host.split('vcard')[0]
   },
   computed: {
     avatars (res) {
@@ -352,7 +351,7 @@ export default {
             console.log(res, 'ssssss')
             // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
             wx.uploadFile({
-              url: 'https://gate.test.jiatu360.cn/api/tool/oss/xcxUpload',
+              url: that.host + 'tool/oss/xcxUpload',
               filePath: res.tempFilePaths[0],
               name: 'file',
               header: {
@@ -413,7 +412,7 @@ export default {
           success: function (res) {
           // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
             wx.uploadFile({
-              url: 'https://gate.test.jiatu360.cn/api/tool/oss/xcxUpload',
+              url: that.host + 'tool/oss/xcxUpload',
               filePath: res.tempFilePaths[0],
               name: 'file',
               header: {
@@ -515,33 +514,144 @@ export default {
       this.dataInfo.bgImgId = this.dataInfo.bgImgId + ''
       this.dataInfo.status = this.dataInfo.status + ''
       this.dataInfo.templateId = this.dataInfo.templateId + ''
-      console.log(this.dataInfo)
       this.$http.post({
         url: '/vcardInfo/updateVcard',
-        header: this.userInfo.token,
         data: this.dataInfo
       }).then(res => {
         console.log(res)
-        wx.showToast({
-          title: '名片修改成功',
-          icon: 'success',
-          duration: 1500,
-          mask: false,
-          success: (result) => {
-            setTimeout(() => {
-              wx.switchTab({
-                url: '../index/main'
-              })
-            }, 1500)
-          }
-        })
+        if (res.code === 200) {
+          wx.showToast({
+            title: '名片修改成功',
+            icon: 'success',
+            duration: 1500,
+            mask: false,
+            success: (result) => {
+              setTimeout(() => {
+                wx.switchTab({
+                  url: '../index/main'
+                })
+              }, 1500)
+            }
+          })
+        } else {
+          wx.showToast({
+            title: '名片制作失败',
+            icon: 'success',
+            duration: 1500,
+            mask: false,
+            success: (result) => {}
+          })
+        }
       })
     },
+    verification () {
+      if (this.dataInfo.name === '') {
+        wx.showToast({
+          title: '请填写姓名',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.company === '') {
+        wx.showToast({
+          title: '请填写公司',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.position === '') {
+        wx.showToast({
+          title: '请填写职位',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.phone === '') {
+        wx.showToast({
+          title: '请填写手机',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.email === '') {
+        wx.showToast({
+          title: '请填写邮箱',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.address === '') {
+        wx.showToast({
+          title: '请填写地址',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.nameEn === '') {
+        wx.showToast({
+          title: '请填写英文名称',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.companyEn === '') {
+        wx.showToast({
+          title: '请填写公司英文名称',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.positionEn === '') {
+        wx.showToast({
+          title: '请填写英文职位',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      if (this.dataInfo.addressEn === '') {
+        wx.showToast({
+          title: '请填写英文地址',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: (result) => {}
+        })
+        return false
+      }
+      return true
+    },
     cropper () {
-      wx.navigateTo({url: '../cropper/main?key=0'})
+      wx.navigateTo({url: '../cropper/main?key=1'})
     },
     cropper1 (e) {
-      wx.navigateTo({url: '../../my/cropper/main?key=3'})
+      wx.navigateTo({url: '../cropper/main?key=2'})
     },
     touch (e) {
       switch (e) {

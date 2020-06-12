@@ -262,7 +262,6 @@ export default {
       let userInfo = wx.getStorageSync('userInfo')
       this.$http.post({
         url: '/vcardRelation/addVcardRelation',
-        header: userInfo.token,
         data: {
           xcxOpenId: userInfo.openId,
           vcardId: this.userId
@@ -303,7 +302,6 @@ export default {
                 wx.setStorageSync('userInfo', res.data)
                 this.$http.post({
                   url: '/vcardRelation/addVcardRelation',
-                  header: res.data.token,
                   data: {
                     xcxOpenId: res.data.openId,
                     vcardId: this.userId
