@@ -259,6 +259,7 @@ export default {
       wx.request({// 高德地图API地理编码
         url: `https://restapi.amap.com/v3/geocode/geo?key=4260cc1cb0fb6b113e894ab08aa75300&address=${this.dataInfo.address}`,
         success (res) {
+          console.log(res)
           let location = res.data.geocodes[0].location.split(',')
           let latitude = parseFloat(location[1])
           let longitude = parseFloat(location[0])

@@ -267,6 +267,7 @@ export default {
         this.$http.get({
           url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
         }).then(res => {
+          this.show = 3
           this.bg = res.data.image
           if (res.data.name === '1') {
             this.fontStyle = '2'
@@ -294,27 +295,27 @@ export default {
         console.log(res.data, 'aaaa')
         this.dataInfo = res.data
         this.show = 2
-        // if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
-        //   this.dataInfo = res.data
-        //   this.show = 3
-        //   this.$http.get({
-        //     url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
-        //   }).then(res => {
-        //   // console.log(res)
-        //     this.bg = res.data.image
-        //     if (res.data.name === '1') {
-        //       this.fontStyle = '2'
-        //     } else {
-        //       this.fontStyle = '1'
-        //     }
-        //   })
-        //   this.$http.get({
-        //     url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
-        //   }).then(res => {
-        //   // console.log(res)
-        //     this.templateStyle = res.data.name
-        //   })
-        // }
+        if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+          this.dataInfo = res.data
+          this.show = 3
+          this.$http.get({
+            url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
+          }).then(res => {
+          // console.log(res)
+            this.bg = res.data.image
+            if (res.data.name === '1') {
+              this.fontStyle = '2'
+            } else {
+              this.fontStyle = '1'
+            }
+          })
+          this.$http.get({
+            url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
+          }).then(res => {
+          // console.log(res)
+            this.templateStyle = res.data.name
+          })
+        }
       })
     },
     onClose () {
@@ -335,7 +336,6 @@ export default {
       let userInfo = wx.getStorageSync('userInfo')
       if (userInfo) {
         this.show1 = true
-        console.log('asdasdasds')
         wx.hideTabBar({
           animation: false,
           success: (result) => {

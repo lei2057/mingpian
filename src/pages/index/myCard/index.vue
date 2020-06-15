@@ -235,6 +235,9 @@ import host from '@/utils/request'
 import md5 from 'md5'
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
+const addressReg = /^([\u4E00-\u9FA5A-Za-z0-9_]+(省|市|区|)){2,}$/
+const phoneReg = /^1[34578]\d{9}$/
+const emailReg = /[\w.]+@[\w.]+/
 export default {
   data () {
     return {
@@ -560,9 +563,9 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.phone === '') {
+      if (this.dataInfo.phone === '' || phoneReg.test(this.dataInfo.phone) === false) {
         wx.showToast({
-          title: '请填写手机',
+          title: '请填写正确的手机号',
           icon: 'none',
           duration: 1500,
           mask: false,
@@ -570,9 +573,9 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.email === '') {
+      if (this.dataInfo.email === '' || emailReg.test(this.dataInfo.phone) === false) {
         wx.showToast({
-          title: '请填写邮箱',
+          title: '请填写正确的邮箱',
           icon: 'none',
           duration: 1500,
           mask: false,
@@ -580,9 +583,9 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.address === '') {
+      if (this.dataInfo.address === '' || addressReg.test(this.dataInfo.address) === false) {
         wx.showToast({
-          title: '请填写地址',
+          title: '请填写地址格式(省市区)',
           icon: 'none',
           duration: 1500,
           mask: false,
@@ -648,7 +651,6 @@ export default {
       this.templateStyle = item.name
     },
     backgroundOpt (index, item) {
-      console.log(index, item)
       this.dataInfo.bgImgId = item.id + ''
       this.backgroundIndex = index
       this.bg = item.image

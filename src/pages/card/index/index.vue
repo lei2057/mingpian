@@ -1,7 +1,11 @@
 <template>
   <div class="pd15">
-    <div v-if="!show">
+    <div v-if="show===3">
       <div class="text">快去制作一张名片帮您积累更多人脉吧！</div>
+      <div class="bg-img"><img src="../../../assets/bg-index.png"></div>
+    </div>
+    <div v-else-if="show===2">
+      <div class="text">快去分享您的名片积累更多人脉吧！</div>
       <div class="bg-img"><img src="../../../assets/bg-index.png"></div>
     </div>
     <div v-else>
@@ -26,7 +30,7 @@ export default {
   data () {
     return {
       dataInfo: [],
-      show: false
+      show: 0
     }
   },
   onLoad () {
@@ -39,11 +43,22 @@ export default {
       url: `/vcardInfo/getVcardList?openId=${userInfo.openId}`
     }).then(res => {
       console.log(res)
-
       if (res.message === '暂无人脉') {
-        this.show = false
+        this.show = 3
+        if (userInfo) {
+          this.$http.get({
+            url: `/vcardInfo/selectById?id=${userInfo.userId}`
+          }).then(res => {
+            console.log(res, '2')
+            if (res.data.name !== '' && res.data.position !== '' && res.data.company !== '' && res.data.email !== '') {
+              this.show = 2
+            } else {
+              this.show = 3
+            }
+          })
+        }
       } else {
-        this.show = true
+        this.show = 1
         for (var k in res.data) {
           let data = {
             time: k,
