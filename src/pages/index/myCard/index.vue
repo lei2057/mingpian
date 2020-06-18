@@ -237,7 +237,7 @@ const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 const addressReg = /^([\u4E00-\u9FA5A-Za-z0-9_]+(省|市|区|)){2,}$/
 const phoneReg = /^1[34578]\d{9}$/
-const emailReg = /[\w.]+@[\w.]+/
+const emailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
 export default {
   data () {
     return {
@@ -573,7 +573,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.email === '' || emailReg.test(this.dataInfo.phone) === false) {
+      if (this.dataInfo.email === '' || emailReg.test(this.dataInfo.email) === false) {
         wx.showToast({
           title: '请填写正确的邮箱',
           icon: 'none',

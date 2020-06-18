@@ -115,12 +115,12 @@
           <div class="tag">*</div>
           <input type="text" placeholder="请填写地址" v-model="dataInfo.address" class="flex" style="color: #000;">
         </div>
-        <div class="disflex" style="padding-top: 8px;">
+        <div class="disflex border_cell" style="padding: 8px 0;">
           <div class="title">邮箱</div>
           <div class="tag">*</div>
           <input type="text" placeholder="请填写邮箱" v-model="dataInfo.email" class="flex" style="color: #000;">
         </div>
-        <div class="disflex border_cell" style="padding: 8px 0;">
+        <div class="disflex" style="padding-top: 8px;">
           <div class="title">微信</div>
           <div class="tag">*</div>
           <input type="text" placeholder="请输入微信" v-model="dataInfo.wxNumber" class="flex" style="color: #000;">
@@ -224,7 +224,7 @@ const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 const addressReg = /^([\u4E00-\u9FA5A-Za-z0-9_]+(省|市|区|)){2,}$/
 const phoneReg = /^1[34578]\d{9}$/
-const emailReg = /[\w.]+@[\w.]+/
+const emailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
 export default {
   data () {
     return {
@@ -511,6 +511,7 @@ export default {
       })
     },
     submit () {
+      console.log(emailReg.test(this.dataInfo.email))
       this.dataInfo.album = this.pics.join(',')
       this.dataInfo.companyPic = this.companyPic.join(',')
       this.dataInfo.id = this.userInfo.userId + ''
