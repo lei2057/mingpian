@@ -32,7 +32,13 @@ import md5 from 'md5'
 let wecropper
 const device = wx.getSystemInfoSync() // 获取设备信息
 const width = device.windowWidth // 示例为一个与屏幕等宽的正方形裁剪框
-const height = device.windowHeight
+let height = device.windowHeight
+if(device.screenHeight===device.windowHeight){
+  height=height-92
+}else{
+  height=height+40
+}
+console.log(height,'sssssss')
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 export default {
@@ -208,6 +214,8 @@ export default {
     padding: 0 20rpx;
     box-sizing: border-box;
     line-height: 50px;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 9;
 }
 
 .cropper-buttons .upload{
@@ -219,10 +227,6 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.cropper-buttons{
-    background-color: rgba(0, 0, 0, 0.95);
 }
 
 .btn{

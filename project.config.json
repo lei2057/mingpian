@@ -1,7 +1,7 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -51,11 +51,11 @@
 			"current": -1,
 			"list": [
 				{
-					"id": 1,
+					"id": 0,
 					"name": "pages/card/shareCard/main",
 					"pathName": "pages/card/shareCard/main",
-					"query": "userId=7",
-					"scene": 1001
+					"query": "userId=43",
+					"scene": null
 				}
 			]
 		}

@@ -92,8 +92,13 @@
       </div>
       <!-- 模板 end -->
       <div style="margin: 20px 0;">
-        <button class="button2" v-if="show" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">收藏名片</button>
-        <button class="button2" v-else @click="collection">收藏名片</button>
+        <div v-if="collect===0">
+          <button class="button2" v-if="show" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">登录</button>
+          <button class="button2" v-else @click="collection">收藏名片</button>
+        </div>
+        <div v-else>
+          <button class="button2">名片已收藏</button>
+        </div>
       </div>
       <div class="detail-item">
         <div class="item-title flex-align"><span class="item-i"></span>个人简介</div>
@@ -129,7 +134,8 @@ export default {
       templateStyle: '1',
       fontStyle: '1',
       bg: '',
-      show: false
+      show: false,
+      collect: 0
     }
   },
   components: {
@@ -177,6 +183,16 @@ export default {
     let userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {
       this.show = false
+      this.$http.post({
+        url: '/vcardRelation/isFav',
+        data: {
+          xcxOpenId: userInfo.openId,
+          vcardId: this.userId
+        }
+      }).then(res => {
+        console.log(res.data)
+        this.collect = res.data
+      })
     } else {
       this.show = true
     }
@@ -270,7 +286,7 @@ export default {
         console.log(res)
         if (res.code === 200) {
           wx.showToast({
-            title: '收藏成功',
+            title: '名片收藏成功',
             icon: 'success',
             duration: 1500,
             success: (result) => {
@@ -300,28 +316,16 @@ export default {
               if (res.code === 200) {
                 console.log(res)
                 wx.setStorageSync('userInfo', res.data)
+                this.show = false
                 this.$http.post({
-                  url: '/vcardRelation/addVcardRelation',
+                  url: '/vcardRelation/isFav',
                   data: {
                     xcxOpenId: res.data.openId,
                     vcardId: this.userId
                   }
                 }).then(res => {
-                  console.log(res)
-                  if (res.code === 200) {
-                    wx.showToast({
-                      title: '收藏成功',
-                      icon: 'success',
-                      duration: 1500,
-                      success: (result) => {
-                        setTimeout(() => {
-                          wx.switchTab({
-                            url: '../index/main'
-                          })
-                        }, 1500)
-                      }
-                    })
-                  }
+                  console.log(res.data)
+                  this.collect = res.data
                 })
               } else {
                 wx.showToast({

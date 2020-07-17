@@ -13,10 +13,10 @@
           <div class="disflex">
             <div class="flex">
               <div class="cardName">姓名<span class="cardJob">职位</span></div>
-              <div class="cardCompany tiao" style="width: 128px;"></div>
-              <div class="tiao" style="margin-bottom: 5px;width: 104px;"></div>
-              <div class="tiao" style="margin-bottom: 5px;width: 104px;"></div>
-              <div class="tiao" style="width: 200px;"></div>
+              <div class="cardCompany tiao" style="width: 80%;"></div>
+              <div class="tiao" style="margin-bottom: 5px;width: 70%;"></div>
+              <div class="tiao" style="margin-bottom: 5px;width: 70%;"></div>
+              <div class="tiao" style="width: 90%;"></div>
             </div>
             <div>
               <div class="disflex" style="width: 90px;height: 90px;border-radius: 50%;overflow: hidden;margin-right: 20px;background: #E9E9E9;">个人头像</div>

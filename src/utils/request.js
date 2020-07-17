@@ -1,6 +1,6 @@
 import md5 from 'md5'
-// const host = 'https://gate.test.jiatu360.cn/api/vcard'
-const host = 'https://gate.jiatu360.cn/api/vcard'
+// const host = 'https://gate.test.yinji360.cn/api/vcard'
+const host = 'https://gate.yinji360.cn/api/vcard'
 var date = new Date()
 var timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 var token = wx.getStorageSync('userInfo').token
