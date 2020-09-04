@@ -612,10 +612,10 @@ export default {
       return true
     },
     cropper () {
-      wx.navigateTo({url: '../cropper/main?key=1'})
+      wx.navigateTo({url: '../cropper/main?key=4'})
     },
     cropper1 (e) {
-      wx.navigateTo({url: '../cropper/main?key=2'})
+      wx.navigateTo({url: '../cropper/main?key=3'})
     },
     touch (e) {
       switch (e) {

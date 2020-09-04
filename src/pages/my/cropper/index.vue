@@ -8,12 +8,13 @@
       @beforeImageLoad="cropperBeforeImageLoad"
       @beforeLoad="cropperLoad"
       ></mpvue-cropper>
-    <div class="cropper-buttons" :style="{ color:cropperOpt.boundStyle.color}">
-      <div
+    <div class="buttonBg"></div>
+    <div class="cropper-buttons">
+      <button
         class="upload btn"
         @tap="uploadTap">
         上传图片
-      </div>
+      </button>
       <button
         class="getCropperImage btn"
         :disabled="isDisable"
@@ -33,12 +34,11 @@ let wecropper
 const device = wx.getSystemInfoSync() // 获取设备信息
 const width = device.windowWidth // 示例为一个与屏幕等宽的正方形裁剪框
 let height = device.windowHeight
-if(device.screenHeight===device.windowHeight){
-  height=height-92
-}else{
-  height=height+40
+if (device.windowHeight === device.screenHeight) {
+  height = height - device.statusBarHeight - 120
+} else {
+  height = height - 60
 }
-console.log(height,'sssssss')
 const date = new Date()
 const timeNum = Math.round(date.getTime() / 1000)// 十位时间戳
 export default {
@@ -66,7 +66,8 @@ export default {
       },
       pageKey: 0,
       host: '',
-      isDisable: false
+      isDisable: false,
+      show: false
     }
   },
   components: {
@@ -75,11 +76,12 @@ export default {
   onLoad (options) {
     console.log(options)
     this.pageKey = options.key
-    console.log(device)
-    console.log(height)
   },
   onShow () {
     this.host = host.host.split('vcard')[0]
+  },
+  mounted () {
+    wecropper = this.$refs.cropper
   },
   methods: {
     cropperReady (...args) {
@@ -97,45 +99,53 @@ export default {
     uploadTap () {
       wx.chooseImage({
         count: 1, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: (res) => {
           const src = res.tempFilePaths[0]
           //  获取裁剪图片资源后，给data添加src属性及其值
-          wecropper.pushOrigin(src)
+          if (src) {
+            this.show = true
+            wecropper.pushOrigin(src)
+          }
         }
       })
     },
     getCropperImage () {
+      let prefix
       let userInfo = wx.getStorageSync('userInfo')
+      if (userInfo) {
+        prefix = userInfo.userId
+      } else {
+        prefix = 88
+      }
       var that = this
       that.isDisable = true
       setTimeout(() => {
         that.isDisable = false
       }, 2000)
-      wx.showLoading({
-        title: '上传中...'
-      })
-      wecropper.getCropperImage({ original: true })
-        .then((src) => {
-          console.log(src, 'wancheng')
+
+      wecropper.getCropperImage(src => {
+        console.log(src, 'wancheng')
+        if (that.show) {
+          wx.showLoading({
+            title: '上传中...'
+          })
           wx.uploadFile({
             url: that.host + 'tool/oss/xcxUpload',
             filePath: src,
             name: 'file',
             header: {
-              'Content-type': 'application/json',
+              'content-type': 'multipart/form-data',
               'sign': md5('t=' + timeNum + '&jiatu2019yinji'),
               'timeStrap': timeNum,
               'token': userInfo.token
             },
             formData: {
-              name: 'file',
               value: src,
-              prefix: userInfo.userId
+              prefix: prefix
             },
             success (res) {
-              console.log(res)
               let data = JSON.parse(res.data)
               if (data.code === 200) {
                 wx.hideLoading()
@@ -159,32 +169,32 @@ export default {
               } else {
                 wx.showModal({
                   title: '错误提示',
-                  content: '上传图片失败!!',
+                  content: data.message,
                   showCancel: false,
                   success (res) { }
                 })
               }
             },
             fail (res) {
-              wx.hideToast()
+              wx.hideLoading()
               wx.showModal({
                 title: '错误提示',
                 content: '上传图片失败!',
                 showCancel: false,
-                success (res) {
-                  console.log(res)
-                }
+                success (res) { }
               })
             }
           })
-        })
-        .catch(e => {
-          console.error('获取图片失败')
-        })
+        } else {
+          wx.showModal({
+            title: '提示',
+            content: '请上传图片',
+            showCancel: false,
+            success (res) { }
+          })
+        }
+      })
     }
-  },
-  mounted () {
-    wecropper = this.$refs.cropper
   }
 }
 </script>
@@ -201,19 +211,27 @@ export default {
     background-color: #e5e5e5;
 }
 
+.buttonBg {
+    background-color: #000;
+    width: 100%;
+    height: 300px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
 .cropper-buttons{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50px;
+    height: 60px;
     padding: 0 20rpx;
     box-sizing: border-box;
-    line-height: 50px;
     background-color: rgba(0, 0, 0, 0.95);
     z-index: 9;
 }

@@ -176,8 +176,8 @@
             <div class="model-wrapper">
               <div class="model-item" v-for="(item,index) in templateInfo" :key="index" style="position: relative;" @click="templateOpt(index,item)">
                 <div style="height: 62px;margin-bottom: 8px;"><img :src="item.template"></div>
+                <div class="active-text" v-if="item.id === dataInfo.templateId">默认</div>
                 <div class="active-wrapper disflex" v-show="index === templateIndex||item.id === dataInfo.templateId"><div class="active-icon"><img src="../../../assets/icon-xz.png"></div></div>
-                <!-- <div>默认</div> -->
               </div>
             </div>
           </div>
@@ -186,6 +186,7 @@
             <div class="background-wrapper">
               <div class="background-item" v-for="(item,index) in backgroundInfo" :key="index" style="position: relative;" @click="backgroundOpt(index,item)">
                 <img :src="item.image" :alt="item.name">
+                <div class="active-text" v-if="item.id === dataInfo.bgImgId">默认</div>
                 <div class="active-wrapper disflex" v-show="index === backgroundIndex||item.id === dataInfo.bgImgId"><div class="active-icon"><img src="../../../assets/icon-xz.png"></div></div>
               </div>
             </div>
@@ -285,7 +286,10 @@ export default {
     }
   },
   onShareAppMessage () { // 转发分享
-
+    return {
+      title: '印记名片王',
+      path: '/pages/index/index/main'
+    }
   },
   methods: {
     fetchInfo () {
@@ -532,6 +536,7 @@ export default {
 .background-wrapper {display: flex;flex-direction: row;flex-wrap: wrap;margin: 0 -6px;margin-bottom: 26px;
   .background-item {width: 30.333%;height: 62px;border-radius: 8px;overflow: hidden;margin: 5px;}
 }
+.active-text {position: absolute;color: #fff;top: 0;right: 5px;font-size: 12px;z-index: 1;}
 .active-wrapper {width: 100%;height: 62px;background: rgba(0,0,0,0.5);border-radius: 8px;position: absolute;top: 0;
   .active-icon {width:18px;height:18px;}
 }
