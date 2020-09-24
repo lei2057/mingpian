@@ -44,7 +44,6 @@ export default {
     }).then(res => {
       console.log(res)
       if (res.message === '暂无人脉') {
-        this.show = 3
         if (userInfo) {
           this.$http.get({
             url: `/vcardInfo/selectById?id=${userInfo.userId}`
@@ -56,6 +55,8 @@ export default {
               this.show = 3
             }
           })
+        } else {
+          this.show = 3
         }
       } else {
         this.show = 1

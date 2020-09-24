@@ -21,10 +21,10 @@
             <div class="company-logo" style="border: 0;" v-else><img :src="logos"></div>
           </div>
           <div class="disflex">
-            <div class="icon28" style="margin-right: 6px;" @click.stop="call"><img src="../../../assets/icon-dh.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="weChat"><img src="../../../assets/icon-wx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="email"><img src="../../../assets/icon-yx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="address"><img src="../../../assets/icon-dz.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dh.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-wx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-yx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dz.png"></div>
           </div>
         </div>
       </div>
@@ -46,10 +46,10 @@
         <div class="disflex" style="padding: 8px 0 0 8px;margin-top: 8px;">
           <div class="flex"></div>
           <div class="disflex">
-            <div class="icon28" style="margin-right: 6px;" @click.stop="call"><img src="../../../assets/icon-dh.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="weChat"><img src="../../../assets/icon-wx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="email"><img src="../../../assets/icon-yx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="address"><img src="../../../assets/icon-dz.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dh.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-wx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-yx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dz.png"></div>
           </div>
         </div>
       </div>
@@ -71,10 +71,10 @@
         <div class="disflex" style="padding: 8px 0 0 8px;margin-top: 8px;">
           <div class="flex"></div>
           <div class="disflex">
-            <div class="icon28" style="margin-right: 6px;" @click.stop="call"><img src="../../../assets/icon-dh.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="weChat"><img src="../../../assets/icon-wx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="email"><img src="../../../assets/icon-yx.png"></div>
-            <div class="icon28" style="margin-right: 6px;" @click.stop="address"><img src="../../../assets/icon-dz.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dh.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-wx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-yx.png"></div>
+            <div class="icon28" style="margin-right: 6px;"><img src="../../../assets/icon-dz.png"></div>
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@
               <div style="position: absolute;right: 12px;top: 6px;width: 25px;height: 25px;" @click='deleteImg(index)'><image src='../../../assets/icon-delete.png' /></div>
           </view>
         </view>
-        <div class="pic-wrapper" @click="chooseImg">
+        <div class="pic-wrapper" @click="chooseImg" v-if="companyPic.length<1">
           <div style="width: 24px;height: 24px;margin:0 auto 10px;padding-top: 40px;"><img src="../../../assets/icon-tpbj.png"></div>
           <div style="text-align: center;">上传图片</div>
         </div>
@@ -271,40 +271,42 @@ export default {
   onLoad (options) {
     console.log(options)
     this.userInfo = wx.getStorageSync('userInfo')
-    this.$http.get({
-      url: `/vcardInfo/selectById?id=${this.userInfo.userId}`
-    }).then(res => {
-      console.log(res, 'aaaaa')
-      this.dataInfo = res.data
-      this.avatars = res.data.avatar
-      this.logos = res.data.logo
-      if (res.data.album === '') {
-        this.pics = []
-      } else {
-        this.pics = res.data.album.split(',')
-      }
-      if (res.data.companyPic === '') {
-        this.companyPic = []
-      } else {
-        this.companyPic = []
-        this.companyPic.push(res.data.companyPic)
-      }
+    if (Object.keys(options).length === 0) {
       this.$http.get({
-        url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
+        url: `/vcardInfo/selectById?id=${this.userInfo.userId}`
       }).then(res => {
-        this.bg = res.data.image
-        if (res.data.name === '1') {
-          this.fontStyle = '2'
+        console.log(res, 'aaaaa')
+        this.dataInfo = res.data
+        this.avatars = res.data.avatar
+        this.logos = res.data.logo
+        if (res.data.album === '') {
+          this.pics = []
         } else {
-          this.fontStyle = '1'
+          this.pics = res.data.album.split(',')
         }
+        if (res.data.companyPic === '') {
+          this.companyPic = []
+        } else {
+          this.companyPic = []
+          this.companyPic.push(res.data.companyPic)
+        }
+        this.$http.get({
+          url: `/vcardBgimage/getImageById?id=${res.data.bgImgId}`
+        }).then(res => {
+          this.bg = res.data.image
+          if (res.data.name === '1') {
+            this.fontStyle = '2'
+          } else {
+            this.fontStyle = '1'
+          }
+        })
+        this.$http.get({
+          url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
+        }).then(res => {
+          this.templateStyle = res.data.name
+        })
       })
-      this.$http.get({
-        url: `/vcardTemplate/getTemplateById?id=${res.data.templateId}`
-      }).then(res => {
-        this.templateStyle = res.data.name
-      })
-    })
+    }
     var that = this
     setTimeout(() => {
       if (options.avatar) {
@@ -313,10 +315,8 @@ export default {
       } else if (options.logo) {
         that.logos = options.logo
         that.dataInfo.logo = options.logo
-      } else {
-
-      }
-    }, 1000)
+      } else {}
+    }, 500)
   },
   onShow () {
     this.host = host.host.split('vcard')[0]
@@ -511,7 +511,6 @@ export default {
       })
     },
     submit () {
-      console.log(emailReg.test(this.dataInfo.email))
       this.dataInfo.album = this.pics.join(',')
       this.dataInfo.companyPic = this.companyPic.join(',')
       this.dataInfo.id = this.userInfo.userId + ''
@@ -589,7 +588,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.email === '' || emailReg.test(this.dataInfo.phone) === false) {
+      if (this.dataInfo.email === '' || emailReg.test(this.dataInfo.email) === false) {
         wx.showToast({
           title: '请填写正确的邮箱',
           icon: 'none',
@@ -599,7 +598,7 @@ export default {
         })
         return false
       }
-      if (this.dataInfo.address === '' || addressReg.test(this.dataInfo.phone) === false) {
+      if (this.dataInfo.address === '' || addressReg.test(this.dataInfo.address) === false) {
         wx.showToast({
           title: '请填写地址格式(省市区)',
           icon: 'none',
